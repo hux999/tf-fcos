@@ -20,6 +20,7 @@ class FCOSHead(tf.keras.Model):
                     kernel_size=3,
                     strides=1,
                     padding="same",
+                    kernel_initializer=tf.keras.initializers.RandomNormal(stddev=0.01),
                 )
             )
             self.cls_tower.add(GroupNormalization(groups=32))
@@ -30,6 +31,7 @@ class FCOSHead(tf.keras.Model):
                     kernel_size=3,
                     strides=1,
                     padding="same",
+                    kernel_initializer=tf.keras.initializers.RandomNormal(stddev=0.01),
                 )
             )
             self.bbox_tower.add(GroupNormalization(groups=32))
@@ -45,12 +47,12 @@ class FCOSHead(tf.keras.Model):
             bias_initializer=tf.keras.initializers.Constant(bias_value),
             name=(prefix+"_cls_logits")
             )
-        print(self.cls_logits)
         self.bbox_pred = layers.Conv2D(
             4,
             kernel_size=3,
             strides=1,
             padding="same",
+            kernel_initializer=tf.keras.initializers.RandomNormal(stddev=0.01),
             name=(prefix+"_bbox_pred")
             )
         self.centerness = layers.Conv2D(
@@ -58,6 +60,7 @@ class FCOSHead(tf.keras.Model):
             kernel_size=3,
             strides=1,
             padding="same",
+            kernel_initializer=tf.keras.initializers.RandomNormal(stddev=0.01),
             name=(prefix+"_centerness")
             )
        
