@@ -111,11 +111,8 @@ def prepare_targets(points, gt_boxes):
         cls_target_lvl, reg_target_lvl = compute_targets_for_locations(
             points_lvl, gt_boxes, object_sizes_of_interest[lvl]
         )
-        #print("done!")
         cls_targets.append(cls_target_lvl)
         reg_targets.append(reg_target_lvl)
-        reg_target_lvl = tf.reduce_min(reg_target_lvl, 2)
-        #print(reg_target_lvl[cls_target_lvl>0])
     return cls_targets, reg_targets
 
 
@@ -159,7 +156,7 @@ def fcos_loss(box_cls,
     box_regression_flatten = tf.concat(box_regression_flatten, 0)
     centerness_flatten = tf.concat(centerness_flatten, 0)
     cls_ind_flatten = tf.concat(cls_ind_flatten, 0)
-    reg_targets_flatten = tf.concat(reg_targets_flatten,0)
+    reg_targets_flatten = tf.concat(reg_targets_flatten, 0)
     
     pos_inds = tf.where(cls_ind_flatten>0)
 
@@ -181,8 +178,8 @@ def fcos_loss(box_cls,
     # centerness loss
     centerness_targets = compute_centerness_targets(reg_targets_flatten)
     centerness_loss = tf.nn.sigmoid_cross_entropy_with_logits(
-        centerness_flatten,
-        centerness_targets
+        logits=centerness_flatten,
+        labels=centerness_targets
     )
     centerness_loss = tf.reduce_mean(centerness_loss)
 
