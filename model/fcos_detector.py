@@ -12,5 +12,5 @@ def build_fcos_detector(num_classes):
     outputs = fcos_block(x, conv_dim=256, num_classes=num_classes)
     model = tf.keras.Model(inputs, outputs)
     model.load_weights("./data/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5", by_name=True)
-    model.summary()
+    # model.summary()
     return model
