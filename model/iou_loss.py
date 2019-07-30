@@ -13,15 +13,11 @@ def iou_loss(pred, target, weight=None):
     pred_top = pred[:, 1]
     pred_right = pred[:, 2]
     pred_bottom = pred[:, 3]
-    pred = tf.reduce_min(pred, 1)
-    # print("pred", pred[pred<0])
 
     target_left = target[:, 0]
     target_top = target[:, 1]
     target_right = target[:, 2]
     target_bottom = target[:, 3]
-    target = tf.reduce_min(target, 1)
-    # print("target", target[target<0])
 
     target_area = (target_left + target_right) * \
                     (target_top + target_bottom)
@@ -35,10 +31,8 @@ def iou_loss(pred, target, weight=None):
 
     area_intersect = w_intersect * h_intersect
     area_union = target_area + pred_area - area_intersect
-    #print(tf.reduce_sum(tf.cast(area_union<=0, tf.float32) ))
-    #print(tf.reduce_sum(tf.cast(area_intersect<=0, tf.float32) ))
+
     ratio = (area_intersect + 1.0) / (area_union + 1.0)
-    #print(tf.reduce_max(ratio), tf.reduce_min(ratio))
 
     losses = -tf.math.log((area_intersect + 1.0) / (area_union + 1.0))
 
