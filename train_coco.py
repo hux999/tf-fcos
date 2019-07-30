@@ -32,7 +32,7 @@ def build_dataset():
     train_dataset = train_dataset.batch(2)
     return train_dataset
 
-
+'''
 def main(_argv):
     model = build_fcos_detector(80)
     train_dataset = detection_dataset.load_tfrecord_dataset(FLAGS.dataset, FLAGS.classes)
@@ -46,7 +46,11 @@ def main(_argv):
         logits, bbox_reg, centerness = model(image)
         losses = fcos_loss(logits, bbox_reg,  centerness, gt_boxes)
         print("cls_loss", losses[0])
-        break
+        print("centerness_loss", losses[1])
+        print("reg_loss", losses[2])
+        if i > 10:
+            break
+'''
 
 
 def train_(model, train_dataset):
@@ -92,17 +96,16 @@ def train_(model, train_dataset):
             if i_batch % 1 == 0:
                 with train_summary_writer.as_default():
                     tf.summary.scalar("loss", train_loss_mean.result(), step=i_batch)
-                print("[%d/%d] loss: %.5f, cls_loss: %.5f" %
-                    (i_batch, i_epoch, train_loss_mean.result(), cls_loss_mean.result()))
+                print("[%d/%d] loss: %.5f" % (i_batch, i_epoch, train_loss_mean.result()))
+                print("\tcls_loss: %.5f" % cls_loss_mean.result())
+                print("\treg_loss: %.5f" % reg_loss_mean.result())
+                print("\tcenterness_loss: %.5f" % centerness_loss_mean.result())
             i_batch += 1
 
         if (i_epoch+1) % save_iter == 0:
             checkpoint.save(checkpoint_dir)
-        
-        train_loss.reset_states()
-        train_accuracy.reset_states()
 
-'''
+
 def main(_argv):
     # build dataset
     train_dataset = build_dataset()
@@ -110,7 +113,6 @@ def main(_argv):
 
     # train
     train_(model, train_dataset)
-'''
 
 
 if __name__ == '__main__':
